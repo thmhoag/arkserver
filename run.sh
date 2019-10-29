@@ -83,6 +83,7 @@ fi
 
 # Create symlinks for configs
 [ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt /ark/server/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
+[ -f /ark/config/Engine.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Engine.ini
 [ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
 [ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
