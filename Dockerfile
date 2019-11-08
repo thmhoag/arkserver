@@ -5,7 +5,8 @@ USER root
 RUN apt-get update && \
     apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo
 
-RUN curl -sL "http://git.io/vtf5N" | bash -s steam && \
+RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.48/netinstall.sh" | bash -s steam && \
+    systemctl disable arkmanager.service && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
