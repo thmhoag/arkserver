@@ -108,7 +108,7 @@ else
 	echo "Save file validation is not enabled."
 fi
 
-if [[ ! -z $BACKUP_ONSTART ]]; then
+if [[ $BACKUP_ONSTART = true ]]; then
 	echo "Backing up on start..."
 	arkmanager backup
 else
