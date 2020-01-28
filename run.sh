@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPODIR="$(dirname "$SCRIPTDIR")"
+
+# always fail script if a cmd fails
+set -eo pipefail
+
 echo "###########################################################################"
 echo "# Ark Server - " `date`
 echo "###########################################################################"
-
-
 
 echo "Ensuring correct permissions..."
 sudo chown steam:steam -R /ark 
@@ -87,11 +91,32 @@ fi
 [ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
 [ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
-echo "Backing up on start..."
-arkmanager backup
+if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && ! -z "$am_serverMap" ]]; then
+	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
+	savefile="$am_serverMap.ark"
+	echo "Validating that a save file exists for $am_serverMap"
+	echo "Checking $savepath"
+	if [[ ! -f "$savepath/$savefile" ]]; then
+		echo "$savefile not found!"
+		echo "Attempting to notify via Discord..."
+		arkmanager notify "Critical error: unable to find $savefile in $savepath!"
+		exit 1
+	else
+		echo "$savefile found."
+	fi
+else
+	echo "Save file validation is not enabled."
+fi
+
+if [[ ! -z $BACKUP_ONSTART ]]; then
+	echo "Backing up on start..."
+	arkmanager backup
+else
+	echo "Backup on start is not enabled."
+fi
+
 
 function stop {
-
 	arkmanager stop
 	exit 0
 }
