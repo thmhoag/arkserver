@@ -100,6 +100,9 @@ if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && !
 		echo "$savefile not found!"
 		echo "Attempting to notify via Discord..."
 		arkmanager notify "Critical error: unable to find $savefile in $savepath!"
+
+		# wait on failure so we don't spam docker logs
+		sleep 5m
 		exit 1
 	else
 		echo "$savefile found."
