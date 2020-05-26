@@ -13,17 +13,19 @@ echo "##########################################################################
 echo "Ensuring correct permissions..."
 sudo chown steam:steam -R /ark 
 
-# Remove arkmanager tracking files if they exist
+[ -n "$defaultinstance" ] || { echo "defaultinstance is required and not set, exiting..." >&2; exit 1; }
+
+# Remove arkmanager tracking files for this instance if they exist
 # They can cause issues with starting the server multiple times
 # due to the restart command not completing when the container exits
 echo "Cleaning up any leftover arkmanager files..."
-[ -f /ark/server/ShooterGame/Saved/.ark-warn-main.lock ] && rm -rf /ark/server/ShooterGame/Saved/.ark-warn-main.lock
-[ -f /ark/server/ShooterGame/Saved/.ark-update.lock ] && rm -rf /ark/server/ShooterGame/Saved/.ark-update.lock
-[ -f /ark/server/ShooterGame/Saved/.ark-update.time ] && rm -rf /ark/server/ShooterGame/Saved/.ark-update.time
-[ -f /ark/server/ShooterGame/Saved/.arkmanager-main.pid ] && rm -rf /ark/server/ShooterGame/Saved/.arkmanager-main.pid
-[ -f /ark/server/ShooterGame/Saved/.arkserver-main.pid ] && rm -rf /ark/server/ShooterGame/Saved/.arkserver-main.pid
-[ -f /ark/server/ShooterGame/Saved/.autorestart ] && rm -rf /ark/server/ShooterGame/Saved/.autorestart
-[ -f /ark/server/ShooterGame/Saved/.autorestart-main ] && rm -rf /ark/server/ShooterGame/Saved/.autorestart-main
+[ -f "/ark/server/ShooterGame/Saved/.ark-warn-${defaultinstance}.lock" ] && rm -rf "/ark/server/ShooterGame/Saved/.ark-warn-${defaultinstance}.lock"
+[ -f "/ark/server/ShooterGame/Saved/.ark-update.lock" ] && rm -rf "/ark/server/ShooterGame/Saved/.ark-update.lock"
+[ -f "/ark/server/ShooterGame/Saved/.ark-update.time" ] && rm -rf "/ark/server/ShooterGame/Saved/.ark-update.time"
+[ -f "/ark/server/ShooterGame/Saved/.arkmanager-${defaultinstance}.pid" ] && rm -rf "/ark/server/ShooterGame/Saved/.arkmanager-${defaultinstance}.pid"
+[ -f "/ark/server/ShooterGame/Saved/.arkserver-${defaultinstance}.pid" ] && rm -rf "/ark/server/ShooterGame/Saved/.arkserver-${defaultinstance}.pid"
+[ -f "/ark/server/ShooterGame/Saved/.autorestart" ] && rm -rf "/ark/server/ShooterGame/Saved/.autorestart"
+[ -f "/ark/server/ShooterGame/Saved/.autorestart-${defaultinstance}" ] && rm -rf "/ark/server/ShooterGame/Saved/.autorestart-${defaultinstance}"
 
 # Create directories if they don't exist
 [ ! -d /ark/config ] && mkdir /ark/config

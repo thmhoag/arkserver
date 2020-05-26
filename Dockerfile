@@ -23,7 +23,8 @@ RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers && \
 WORKDIR /home/steam
 USER steam
 
-ENV am_ark_SessionName="Ark Server" \
+ENV defaultinstance="main" \
+    am_ark_SessionName="Ark Server" \
     am_serverMap="TheIsland" \
     am_ark_ServerAdminPassword="k3yb04rdc4t" \
     am_ark_MaxPlayers=70 \
