@@ -120,7 +120,7 @@ fi
 
 
 function stop {
-	arkmanager stop
+	arkmanager stop --warn
 	exit 0
 }
 
