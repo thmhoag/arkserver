@@ -120,6 +120,8 @@ fi
 
 
 function stop {
+	arkmanager broadcast "Server is shutting down"
+	arkmanager notify "Server is shutting down"
 	arkmanager stop
 	exit 0
 }
