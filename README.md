@@ -48,6 +48,7 @@ $ docker run -d \
     -v ark:/ark \  # mounted as the directory to contain the server/backup/log/config files
     -p 27015:27015 -p 27015:27015/udp \  # steam query port
     -p 7778:7778 -p 7778:7778/udp \  # gameserver port
+    -p 7777:7777 -p 7777:7777/udp \ # gameserver port
     thmhoag/arkserver
 ```
 
