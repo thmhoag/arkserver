@@ -13,8 +13,6 @@ echo "##########################################################################
 echo "Ensuring correct permissions..."
 sudo chown steam:steam -R /ark 
 
-[ -n "$defaultinstance" ] || { echo "defaultinstance is required and not set, exiting..." >&2; exit 1; }
-
 # Create directories if they don't exist
 [ ! -d /ark/config ] && mkdir /ark/config
 [ ! -d /ark/log ] && mkdir /ark/log
@@ -29,6 +27,9 @@ fi
 
 echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
+
+[ -n "$defaultinstance" ] || { echo "defaultinstance is required and not set, exiting..." >&2; exit 1; }
+ln -sf /ark/config/arkmanager.cfg /etc/arkmanager/instances/${defaultinstance}.cfg
 
 if [ ! -d /ark/server ] || [ ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then 
 	echo "No game files found. Installing..."
