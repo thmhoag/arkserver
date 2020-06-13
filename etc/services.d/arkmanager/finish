@@ -1,0 +1,14 @@
+#!/usr/bin/execlineb -S0
+
+
+arkmanager broadcast "Server is shutting down"
+arkmanager notify "Server is shutting down"
+arkmanager stop
+
+s6-svscanctl -t /var/run/s6/services
+
+echo "Cleaning up any leftover arkmanager files..."
+[ -f "/ark/server/ShooterGame/Saved/.ark-warn-${defaultinstance}.lock" ] && rm -rf "/ark/server/ShooterGame/Saved/.ark-warn-${defaultinstance}.lock"
+[ -f "/ark/server/ShooterGame/Saved/.arkmanager-${defaultinstance}.pid" ] && rm -rf "/ark/server/ShooterGame/Saved/.arkmanager-${defaultinstance}.pid"
+[ -f "/ark/server/ShooterGame/Saved/.arkserver-${defaultinstance}.pid" ] && rm -rf "/ark/server/ShooterGame/Saved/.arkserver-${defaultinstance}.pid"
+[ -f "/ark/server/ShooterGame/Saved/.autorestart-${defaultinstance}" ] && rm -rf "/ark/server/ShooterGame/Saved/.autorestart-${defaultinstance}"

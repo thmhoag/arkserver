@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv bash
+
+# Create directories if they don't exist
+[ ! -d /ark/config ] && mkdir /ark/config
+[ ! -d /ark/log ] && mkdir /ark/log
+[ ! -d /ark/backup ] && mkdir /ark/backup
+[ ! -d /ark/staging ] && mkdir /ark/staging
+
+
+echo "Creating arkmanager.cfg from environment variables..."
+echo -e "# Ark Server Tools - arkmanager config\n# Generated from container environment variables\n\n" > /ark/config/arkmanager.cfg
+if [ -f /ark/config/arkmanager_base.cfg ]; then
+	cat /ark/config/arkmanager_base.cfg >> /ark/config/arkmanager.cfg
+fi
+
+echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
+printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
+
+[ -n "$defaultinstance" ] || { echo "defaultinstance is required and not set, exiting..." >&2; exit 1; }
+ln -sf /ark/config/arkmanager.cfg /etc/arkmanager/instances/${defaultinstance}.cfg
+
+mkdir -p /ark/server/ShooterGame/Saved/SavedArks
+mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
+mkdir -p /ark/server/ShooterGame/Content/Mods
+mkdir -p /ark/server/ShooterGame/Binaries/Linux/
+
+# make sure we still own all of it
+chown -R steam:steam /ark

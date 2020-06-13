@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+
+if [[ $BACKUP_ONSTART = true ]]; then
+	echo "Backing up on start..."
+	arkmanager backup
+else
+	echo "Backup on start is not enabled."
+fi

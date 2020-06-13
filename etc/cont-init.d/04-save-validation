@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv bash
+
+
+if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && ! -z "$am_serverMap" ]]; then
+	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
+	savefile="$am_serverMap.ark"
+	echo "Validating that a save file exists for $am_serverMap"
+	echo "Checking $savepath"
+	if [[ ! -f "$savepath/$savefile" ]]; then
+		echo "$savefile not found!"
+		echo "Attempting to notify via Discord..."
+		arkmanager notify "Critical error: unable to find $savefile in $savepath!"
+
+		# wait on failure so we don't spam docker logs
+		sleep 5m
+		exit 1
+	else
+		echo "$savefile found."
+	fi
+else
+	echo "Save file validation is not enabled."
+fi
