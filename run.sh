@@ -11,7 +11,8 @@ echo "# Ark Server - " `date`
 echo "###########################################################################"
 
 echo "Ensuring correct permissions..."
-sudo chown steam:steam -R /ark 
+sudo chown steam:steam -R /ark
+sudo chown steam:steam -R /home/steam
 
 # Remove arkmanager tracking files if they exist
 # They can cause issues with starting the server multiple times
@@ -40,7 +41,7 @@ fi
 echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
 
-if [ ! -d /ark/server ] || [ ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then 
+if [ ! -d /ark/server ] || [ ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
 	echo "No game files found. Installing..."
 	mkdir -p /ark/server/ShooterGame/Saved/SavedArks
 	mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
