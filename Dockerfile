@@ -34,6 +34,7 @@ ENV defaultinstance="main" \
     am_ark_RCONPort=32330 \
     am_arkwarnminutes=15
 
+VOLUME /home/steam/.steam/SteamApps/workshop
 VOLUME /ark
 
 ENTRYPOINT [ "./entrypoint.sh" ]

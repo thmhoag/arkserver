@@ -26,3 +26,8 @@ mkdir -p /ark/server/ShooterGame/Binaries/Linux/
 
 # make sure we still own all of it
 chown -R steam:steam /ark
+chown -R steam:steam /home/steam
+
+# must be setup this way for s6-logging to work
+chmod -R 0777 /ark/log
+chown -R nobody:nogroup /ark/log

@@ -1,5 +1,10 @@
 #!/usr/bin/with-contenv bash
 
 echo "starting cron service"
-crontab -l
-exec cron -f /ark/config/crontab
+exec cron -f -L 2 &
+crondpid=$!
+
+# load the crontab before we start
+crontab /ark/config/crontab
+
+wait $crondpid

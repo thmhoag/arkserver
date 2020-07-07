@@ -18,9 +18,10 @@ if [ ! -f /ark/config/crontab ]; then
 # */15 * * * * arkmanager backup			# backup every 15min
 # 0 0 * * * arkmanager backup				# backup every day at midnight
 
-*/30 * * * * arkmanager update --update-mods --warn --saveworld
-10 */8 * * * arkmanager saveworld && arkmanager backup
-15 10 * * * arkmanager restart --warn --saveworld
+*/30 * * * * arkmanager update --update-mods --warn --saveworld >> /ark/log/cron.log 2>&1
+10 */8 * * * arkmanager saveworld && arkmanager backup >> /ark/log/cron.log 2>&1
+15 10 * * * arkmanager restart --warn --saveworld >> /ark/log/cron.log 2>&1
+*/1 * * * * echo "cron jobs are running" >> /ark/log/cron.log 2>&1
 
 EOF
 fi
