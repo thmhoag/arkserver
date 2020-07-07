@@ -1,0 +1,37 @@
+version: '3.4'
+
+volumes:
+  steam:
+  ark:
+
+services:
+  ark_theisland:
+    pid: host
+    image: thmhoag/arkserver:dev
+    container_name: ark_theisland
+    environment:
+      - defaultinstance=ark_theisland
+      - am_ark_Port=7778
+      - am_ark_QueryPort=27015
+      - am_ark_RCONEnabled=True
+      - am_ark_RCONPort=32330
+      - am_ark_MaxPlayers=70
+      - am_ark_SessionName=Ark Server
+      - am_serverMap=TheIsland
+      - am_ark_ServerAdminPassword=k3yb04rdc4t
+      - am_arkwarnminutes=15
+      - am_ark_arkMaxBackupSizeGB=1
+      - TZ=UTC
+    ports:
+      - 7777:7777/udp
+      - 7777:7777
+      - 7778:7778/udp
+      - 7778:7778
+      - 27015:27015/udp
+      - 27015:27015
+      - 32330:32330
+    volumes:
+      - steam:/home/steam/.steam/SteamApps/workshop
+      - ark:/ark
+    restart: always
+
