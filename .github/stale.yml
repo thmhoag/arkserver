@@ -17,4 +17,4 @@ markComment: >
 closeComment: false
 exemptProjects: true
 exemptMilestones: true
-exemptAssignees: true
+exemptAssignees: false
