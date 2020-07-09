@@ -6,6 +6,8 @@ daysUntilClose: 3
 exemptLabels:
   - pinned
   - security
+  - good first issue
+  - help wanted
 # Label to use when marking an issue as stale
 staleLabel: stale
 # Comment to post when marking an issue as stale. Set to `false` to disable
@@ -17,4 +19,4 @@ markComment: >
 closeComment: false
 exemptProjects: true
 exemptMilestones: true
-exemptAssignees: false
+exemptAssignees: true
