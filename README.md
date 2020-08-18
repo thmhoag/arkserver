@@ -68,7 +68,7 @@ A set of required environment variables have default values provided as part of 
 | am_ark_Port | `7778` | Game server port (allows clients to connect to the server) |
 | am_ark_RCONPort | `32330` | RCON port |
 | am_arkwarnminutes | `15` | Number of minutes to wait/warn players before updating/restarting |
-| am_arkflag_crossplay | `true` | Allow crossyplay with Players on Epic |
+| am_arkflag_crossplay | `false` | Allow crossyplay with Players on Epic |
 
 ### Adding Additional Variables
 
