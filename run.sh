@@ -10,6 +10,10 @@ echo "##########################################################################
 echo "# Ark Server - " `date`
 echo "###########################################################################"
 
+echo "Listen on TCP 4000 for health checks"
+(nc -lk 4000) &
+NC_PID=$!
+
 echo "Ensuring correct permissions..."
 sudo find /ark -not -user steam -o -not -group steam -exec chown -v steam:steam {} \; 
 sudo find /home/steam -not -user steam -o -not -group steam -exec chown -v steam:steam {} \;
@@ -121,6 +125,8 @@ fi
 
 
 function stop {
+        echo "Killing TCP listen on 4000"
+        kill -SIGTERM $NC_PID
 	arkmanager broadcast "Server is shutting down"
 	arkmanager notify "Server is shutting down"
 	arkmanager stop
