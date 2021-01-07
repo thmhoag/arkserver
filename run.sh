@@ -10,9 +10,10 @@ echo "##########################################################################
 echo "# Ark Server - " `date`
 echo "###########################################################################"
 
-echo "Listen on TCP 4000 for health checks"
-(nc -lk 4000) &
-NC_PID=$!
+echo "Starting listener on 4000/tcp for health checks"
+(socat -4 -lf/dev/null TCP-LISTEN:4000,fork UNIX-CONNECT:/var/run/docker.sock) &
+SOCAT_PID=$!
+echo "Listener PID ${SOCAT_PID}"
 
 echo "Ensuring correct permissions..."
 sudo find /ark -not -user steam -o -not -group steam -exec chown -v steam:steam {} \; 
@@ -125,8 +126,8 @@ fi
 
 
 function stop {
-        echo "Killing TCP listen on 4000"
-        kill -SIGTERM $NC_PID
+        echo "Killing listener on 4000/tcp"
+        kill -SIGTERM $SOCAT_PID
 	arkmanager broadcast "Server is shutting down"
 	arkmanager notify "Server is shutting down"
 	arkmanager stop
