@@ -3,7 +3,7 @@ FROM thmhoag/steamcmd:latest
 USER root
 
 RUN apt-get update && \
-    apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo
+    apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo tzdata
 
 RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.54/netinstall.sh" | bash -s steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
