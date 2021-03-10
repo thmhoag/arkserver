@@ -41,12 +41,22 @@ fi
 echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
 
-if [ ! -d /ark/server ] || [ ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
+if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" ]; then
+  # migration: move files
+  if [ ! -f $ARKSERVER_SHARED/ShooterGame/Binaries/Linux/ShooterGameServer -a -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
+    mv /ark/server/* $ARKSERVER_SHARED/
+  fi
+  # shared server files in this directory
+  ln -sf $ARKSERVER_SHARED /ark/server
+fi
+
+if [ ! -d /ark/server -o ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
 	echo "No game files found. Installing..."
-	mkdir -p /ark/server/ShooterGame/Saved/SavedArks
 	mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
 	mkdir -p /ark/server/ShooterGame/Content/Mods
 	mkdir -p /ark/server/ShooterGame/Binaries/Linux/
+	ln -sf /ark/log /ark/server/ShooterGame/Saved/Logs
+	ln -sf /ark/$am_ark_AltSaveDirectoryName /ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName
 fi
 
 if [ ! -f /ark/config/crontab ]; then
@@ -92,7 +102,7 @@ fi
 [ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
 [ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
-if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && ! -z "$am_serverMap" ]]; then
+if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_serverMap" ]]; then
 	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
 	savefile="$am_serverMap.ark"
 	echo "Validating that a save file exists for $am_serverMap"
@@ -111,6 +121,7 @@ if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && !
 else
 	echo "Save file validation is not enabled."
 fi
+
 
 if [[ "$ARKCLUSTER" = true ]]; then
   # link shared cluster directory

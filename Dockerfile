@@ -10,7 +10,7 @@ RUN apt-get update \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
-RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.54/netinstall.sh" | bash -s steam && \
+RUN curl -sL "https://raw.githubusercontent.com/arkmanager/ark-server-tools/v1.6.57/netinstall.sh" | bash -s steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
@@ -36,21 +36,26 @@ ENV am_ark_SessionName="Ark Server" \
     am_ark_QueryPort=27015 \
     am_ark_Port=7778 \
     am_ark_RCONPort=32330 \
-#    am_ark_AltSaveDirectoryName="SavedArks" \
+    am_ark_AltSaveDirectoryName="SavedArks" \
     am_arkwarnminutes=15 \
-    am_arkflag_crossplay=false \
-    am_ark_GameModIds="" \
     am_arkAutoUpdateOnStart=false
+#   am_ark_GameModIds="" \
+#   am_ark_bRawSockets="" \
+#   am_arkopt_clusterid=mycluster \
+#   am_arkflag_crossplay="" \
+#   am_arkflag_NoTransferFromFiltering="" \
+#   am_arkflag_servergamelog="" \
+#   am_arkflag_ForceAllowCaveFlyers="" \
 
 ENV VALIDATE_SAVE_EXISTS=false \
     BACKUP_ONSTART=false \
     LOG_RCONCHAT=false \
+#    ARKSERVER_SHARED="/arkserver" \
     ARKCLUSTER=false
 
 VOLUME /ark
 # separate server files -> shared between servers in the cluster
-#VOLUME /arkserver
-#ENV am_arkserverroot="/arkserver"
+VOLUME /arkserver
 VOLUME /arkclusters
 
 CMD [ "./run.sh" ]
