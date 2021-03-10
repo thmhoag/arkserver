@@ -112,6 +112,11 @@ else
 	echo "Save file validation is not enabled."
 fi
 
+if [[ "$ARKCLUSTER" = true ]]; then
+  # link shared cluster directory
+  ln -sf /arkclusters /ark/server/ShooterGame/Saved/clusters
+fi
+
 if [[ $BACKUP_ONSTART = true ]]; then
 	echo "Backing up on start..."
 	arkmanager backup
@@ -131,9 +136,10 @@ function stop {
 trap stop INT
 trap stop TERM
 
-# TODO: Provide IF statement here with ENV variable
-# to allow server logs to be scraped from RCON to stdout
-# bash -c ./log.sh &
+# log from RCON to stdout
+if [[ $LOG_RCONCHAT = true ]]; then
+  bash -c ./log.sh &
+fi
 
 arkmanager start --no-background --verbose &
 arkmanpid=$!
