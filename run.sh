@@ -42,7 +42,7 @@ fi
 echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
 
-if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" ]; then
+if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" -a ! -L /ark/server ]; then
   # migration: move files
   if [ ! -f $ARKSERVER_SHARED/ShooterGame/Binaries/Linux/ShooterGameServer -a -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
     mv /ark/server/* $ARKSERVER_SHARED/
