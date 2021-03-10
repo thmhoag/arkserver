@@ -51,7 +51,7 @@ if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" -a ! -L /ark/server ]; the
   ln -sf $ARKSERVER_SHARED /ark/server
 fi
 
-if [ ! -d /ark/server -o ! -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
+if [ ! -d /ark/server/ShooterGame ]; then
 	echo "No game files found. Installing..."
 	mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
 	mkdir -p /ark/server/ShooterGame/Content/Mods

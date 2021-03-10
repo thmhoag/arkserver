@@ -51,7 +51,7 @@ ENV VALIDATE_SAVE_EXISTS=false \
     BACKUP_ONSTART=false \
     LOG_RCONCHAT=false \
     # ARKSERVER_SHARED requires to disable staging directory!
-#    am_ark_arkStagingDir="" \
+#    am_arkStagingDir="" \
 #    ARKSERVER_SHARED="/arkserver" \
     ARKCLUSTER=false
 
