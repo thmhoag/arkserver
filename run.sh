@@ -31,6 +31,7 @@ echo "Cleaning up any leftover arkmanager files..."
 [ ! -d /ark/log ] && mkdir /ark/log
 [ ! -d /ark/backup ] && mkdir /ark/backup
 [ ! -d /ark/staging ] && mkdir /ark/staging
+[ ! -d /ark/$am_ark_AltSaveDirectoryName ] && mkdir /ark/$am_ark_AltSaveDirectoryName
 
 echo "Creating arkmanager.cfg from environment variables..."
 echo -e "# Ark Server Tools - arkmanager config\n# Generated from container environment variables\n\n" > /ark/config/arkmanager.cfg
