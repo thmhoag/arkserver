@@ -28,34 +28,35 @@ RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers && \
 WORKDIR /home/steam
 USER steam
 
-ENV am_ark_SessionName="Ark Server" \
-    am_serverMap="TheIsland" \
-    am_ark_ServerAdminPassword="k3yb04rdc4t" \
-    am_ark_ServerPassword="" \
+ENV am_ark_SessionName=Ark\ Server \
+    am_serverMap=TheIsland \
+    am_ark_ServerAdminPassword=k3yb04rdc4t \
+#    am_ark_ServerPassword= \
     am_ark_MaxPlayers=70 \
     am_ark_QueryPort=27015 \
     am_ark_Port=7778 \
     am_ark_RCONPort=32330 \
-    am_ark_AltSaveDirectoryName="SavedArks" \
+    am_ark_AltSaveDirectoryName=SavedArks \
     am_arkwarnminutes=15 \
     am_arkAutoUpdateOnStart=false
-#   am_ark_GameModIds="" \
-#   am_ark_bRawSockets="" \
+#   am_ark_GameModIds= \
+#   am_ark_bRawSockets= \
 #   am_arkopt_clusterid=mycluster \
-#   am_arkflag_crossplay="" \
-#   am_arkflag_NoTransferFromFiltering="" \
-#   am_arkflag_servergamelog="" \
-#   am_arkflag_ForceAllowCaveFlyers="" \
+#   am_arkflag_crossplay= \
+#   am_arkflag_NoTransferFromFiltering= \
+#   am_arkflag_servergamelog= \
+#   am_arkflag_ForceAllowCaveFlyers= \
 
 ENV VALIDATE_SAVE_EXISTS=false \
     BACKUP_ONSTART=false \
     LOG_RCONCHAT=false \
     # ARKSERVER_SHARED requires to disable staging directory!
-#    am_arkStagingDir="" \
-#    ARKSERVER_SHARED="/arkserver" \
+#    am_arkStagingDir= \
+#    ARKSERVER_SHARED=/arkserver \
     ARKCLUSTER=false
 
-VOLUME /home/steam/Steam
+# only mount the steamapps directory
+VOLUME /home/steam/.steam/steamapps
 VOLUME /ark
 # separate server files -> shared between servers in the cluster
 VOLUME /arkserver

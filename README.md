@@ -44,7 +44,7 @@ docker pull thmhoag/arkserver:latest
 To run a generic server with no configuration modifications:
 ```bash
 $ docker run -d \
-    -v steam:/home/steam/Steam \  # mounted so that workshop (mod) downloads are persisted
+    -v steam:/home/steam/.steam/steamapps \  # mounted so that workshop (mod) downloads are persisted
     -v ark:/ark \  # mounted as the directory to contain the server/backup/log/config files
     -p 27015:27015 -p 27015:27015/udp \  # steam query port
     -p 7778:7778 -p 7778:7778/udp \  # gameserver port
