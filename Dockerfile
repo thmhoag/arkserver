@@ -55,6 +55,7 @@ ENV VALIDATE_SAVE_EXISTS=false \
 #    ARKSERVER_SHARED="/arkserver" \
     ARKCLUSTER=false
 
+VOLUME /home/steam/Steam
 VOLUME /ark
 # separate server files -> shared between servers in the cluster
 VOLUME /arkserver

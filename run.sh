@@ -31,7 +31,8 @@ echo "Cleaning up any leftover arkmanager files..."
 [ ! -d /ark/log ] && mkdir /ark/log
 [ ! -d /ark/backup ] && mkdir /ark/backup
 [ ! -d /ark/staging ] && mkdir /ark/staging
-[ ! -d /ark/$am_ark_AltSaveDirectoryName ] && mkdir /ark/$am_ark_AltSaveDirectoryName
+[ ! -d /ark/saved ] && mkdir /ark/saved
+[ ! -d /ark/saved/$am_ark_AltSaveDirectoryName ] && mkdir /ark/saved/$am_ark_AltSaveDirectoryName
 
 echo "Creating arkmanager.cfg from environment variables..."
 echo -e "# Ark Server Tools - arkmanager config\n# Generated from container environment variables\n\n" > /ark/config/arkmanager.cfg
@@ -53,11 +54,12 @@ fi
 
 if [ ! -d /ark/server/ShooterGame ]; then
 	echo "No game files found. Installing..."
-	mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
+	mkdir -p /ark/server/ShooterGame
+	# whole `Saved` directory must be kept separate per server
+	ln -sf /ark/saved /ark/server/ShooterGame/Saved
+  mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
 	mkdir -p /ark/server/ShooterGame/Content/Mods
 	mkdir -p /ark/server/ShooterGame/Binaries/Linux/
-	ln -sf /ark/log /ark/server/ShooterGame/Saved/Logs
-	ln -sf /ark/$am_ark_AltSaveDirectoryName /ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName
 fi
 
 if [ ! -f /ark/config/crontab ]; then
@@ -98,6 +100,7 @@ else
 fi
 
 # Create symlinks for configs
+# INFO: this is no longer needed and kept only for backwards compatibility. Simply edit your config in the `/ark/saved` directory
 [ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt /ark/server/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
 [ -f /ark/config/Engine.ini ] && ln -sf /ark/config/Engine.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Engine.ini
 [ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
@@ -123,10 +126,9 @@ else
 	echo "Save file validation is not enabled."
 fi
 
-
 if [[ "$ARKCLUSTER" = true ]]; then
   # link shared cluster directory
-  ln -sf /arkclusters /ark/server/ShooterGame/Saved/clusters
+  [ ! -L /ark/server/ShooterGame/Saved/clusters ] && ln -sf /arkclusters /ark/server/ShooterGame/Saved/clusters
 fi
 
 if [[ $BACKUP_ONSTART = true ]]; then
@@ -135,7 +137,6 @@ if [[ $BACKUP_ONSTART = true ]]; then
 else
 	echo "Backup on start is not enabled."
 fi
-
 
 function stop {
 	arkmanager broadcast "Server is shutting down"
