@@ -32,6 +32,12 @@ echo "Cleaning up any leftover arkmanager files..."
 [ ! -d /ark/backup ] && mkdir /ark/backup
 [ ! -d /ark/staging ] && mkdir /ark/staging
 [ ! -d /ark/saved ] && mkdir /ark/saved
+
+# migrate to new directory structure
+if [ -d /ark/server/ShooterGame/Saved ]; then
+  # move to /ark/saved
+  mv /ark/server/ShooterGame/Saved/* /ark/saved/ && ln -sf /ark/saved /ark/server/ShooterGame/Saved
+fi
 [ ! -d /ark/saved/$am_ark_AltSaveDirectoryName ] && mkdir /ark/saved/$am_ark_AltSaveDirectoryName
 
 echo "Creating arkmanager.cfg from environment variables..."

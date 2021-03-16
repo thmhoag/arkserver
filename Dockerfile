@@ -40,7 +40,6 @@ ENV am_ark_SessionName=Ark\ Server \
     am_arkwarnminutes=15 \
     am_arkAutoUpdateOnStart=false
 #   am_ark_GameModIds= \
-#   am_ark_bRawSockets= \
 #   am_arkopt_clusterid=mycluster \
 #   am_arkflag_crossplay= \
 #   am_arkflag_NoTransferFromFiltering= \
