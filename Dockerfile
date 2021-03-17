@@ -10,7 +10,7 @@ RUN apt-get update \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
-RUN curl -sL "https://raw.githubusercontent.com/arkmanager/ark-server-tools/v1.6.57/netinstall.sh" | bash -s steam && \
+RUN curl -sL https://git.io/arkmanager | bash -s steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
