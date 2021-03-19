@@ -1,3 +1,4 @@
+ARG AMG_VERSION=latest
 FROM thmhoag/steamcmd:latest
 
 USER root
@@ -10,7 +11,11 @@ RUN apt-get update \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
-RUN curl -sL https://git.io/arkmanager | bash -s steam && \
+RUN (if [ $AMG_VERSION = "latest" ]; then \
+      curl -sL "https://git.io/arkmanager"; \
+    else \
+      curl -sL "https://raw.githubusercontent.com/arkmanager/ark-server-tools/$AMG_VERSION/netinstall.sh"; \
+    fi) | bash -s steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
