@@ -1,6 +1,7 @@
+ARG STEAMCMD_VERSION=latest
 ARG AMG_BUILD=latest
 ARG AMG_VERSION=v1.6.57
-FROM thmhoag/steamcmd:latest AS base
+FROM thmhoag/steamcmd:$STEAMCMD_VERSION AS base
 
 USER root
 
@@ -15,8 +16,8 @@ RUN apt-get update \
 FROM base AS arkmanager-latest
 RUN curl -sL "https://git.io/arkmanager" | bash -s steam
 
-ARG AMG_VERSION
 FROM base AS arkmanager-versioned
+ARG AMG_VERSION
 RUN curl -sL "https://raw.githubusercontent.com/arkmanager/ark-server-tools/$AMG_VERSION/netinstall.sh" | bash -s steam
 
 ARG AMG_BUILD
