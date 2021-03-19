@@ -46,17 +46,21 @@ if [ -f /ark/config/arkmanager_base.cfg ]; then
 	cat /ark/config/arkmanager_base.cfg >> /ark/config/arkmanager.cfg
 fi
 
+if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" ]; then
+  if [ ! -L /ark/server ]; then
+    # migration: move files
+    if [ ! -f $ARKSERVER_SHARED/ShooterGame/Binaries/Linux/ShooterGameServer -a -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
+      mv /ark/server/* $ARKSERVER_SHARED/
+    fi
+    # shared server files in this directory
+    ln -sf $ARKSERVER_SHARED /ark/server
+  fi
+  # shared server files requires disabling staging
+  export am_arkStagingDir=
+fi
+
 echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
-
-if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" -a ! -L /ark/server ]; then
-  # migration: move files
-  if [ ! -f $ARKSERVER_SHARED/ShooterGame/Binaries/Linux/ShooterGameServer -a -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
-    mv /ark/server/* $ARKSERVER_SHARED/
-  fi
-  # shared server files in this directory
-  ln -sf $ARKSERVER_SHARED /ark/server
-fi
 
 if [ ! -d /ark/server/ShooterGame ]; then
 	echo "No game files found. Installing..."
@@ -156,7 +160,7 @@ trap stop INT
 trap stop TERM
 
 # log from RCON to stdout
-if [[ $LOG_RCONCHAT = true ]]; then
+if [ $LOG_RCONCHAT -gt 0 ]; then
   bash -c ./log.sh &
 fi
 

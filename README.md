@@ -69,21 +69,37 @@ A set of required environment variables have default values provided as part of 
 | am_ark_RCONPort | `32330` | RCON port |
 | am_arkwarnminutes | `15` | Number of minutes to wait/warn players before updating/restarting |
 | am_arkflag_crossplay | `false` | Allow crossyplay with Players on Epic |
+| ARKCLUSTER | `false` | Symlinks `ShooterGame/Saved/clusters` to the `/arkclusters` volume |
+| ARKSERVER_SHARED | `` | To optionally share server binary files, use `/arkserver` volume |
+| LOG_RCONCHAT | `0` | Fetch chat commands every X seconds and log them to stdout, `0` = disabled |
 
 ### Adding Additional Variables
 
 Any configuration value that is available via `arkmanager` can be set using an environment variable. This works by taking any environment variable on the container that is prefixed with `am_` and mapping it to the corresponding environment variable in the `arkmanager.cfg` file. 
 
-For a complete list of configuration values available, please see [FezVrasta](https://github.com/FezVrasta)'s great documentation here: [arkmanager Configuration Files](https://github.com/FezVrasta/ark-server-tools#configuration-files)
+For a complete list of configuration values available, please see [FezVrasta](https://github.com/arkmanager)'s great documentation here: [arkmanager Configuration Files](https://github.com/arkmanager/ark-server-tools#configuration-files)
+
+Some examples:
+```shell script
+am_ark_ServerPassword=s3cr3t
+am_ark_GameModIds=889745138,731604991
+am_arkopt_clusterid=mycluster
+am_arkflag_NoTransferFromFiltering=
+am_arkflag_servergamelog=
+am_arkflag_ForceAllowCaveFlyers=
+```
 
 ## Volumes
 
 This image has two main volumes that should be mounted as named volumes or host directories for the persistence of the server install and all related configuration files. More information on Docker volumes here: [Docker: Use Volumes](https://docs.docker.com/storage/volumes/)
+The optional volumes can be used to share the server binary files or `clusters` files required to run an ARK cluster and be able to jump from one map to another. 
 
 | Path | Description |
 | - | - |
-| /home/steam/Steam | Directory of steam cache and other steamcmd-related files. Should be mounted so that mod installs are persisted between container runs/restarts |
+| /home/steam/.steam/steamapps | Directory of steamapps and workshop files. Should be mounted so that mod installs are persisted between container runs/restarts |
 | /ark | Directory that will contain the server files, config files, logs and backups. More information below |
+| /arkclusters | (optional) Directory that contains the shared cluster files required to jump from one ARK server to another |
+| /arkserver | (optional) Directory that contains the server binary files from steam, shared for multiple instances |
 
 ### Subdirectories of /ark
 
@@ -96,3 +112,4 @@ Inside the `/ark` volume there are several directories containing server related
 | /ark/log | Location of the arkmanager and arkserver log files |
 | /ark/server | Location of the server installation performed by `steamcmd`. This will contain the ShooterGame directory and the actual server binaries. |
 | /ark/staging | Default directory for staging game and mod updates. Can be changed using in `arkmanager.cfg` |
+| /ark/saved | Location of the `Saved` directory of a server instance |
