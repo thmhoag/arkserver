@@ -15,9 +15,11 @@ RUN apt-get update \
 FROM base AS arkmanager-latest
 RUN curl -sL "https://git.io/arkmanager" | bash -s steam
 
+ARG AMG_VERSION
 FROM base AS arkmanager-versioned
 RUN curl -sL "https://raw.githubusercontent.com/arkmanager/ark-server-tools/$AMG_VERSION/netinstall.sh" | bash -s steam
 
+ARG AMG_BUILD
 FROM arkmanager-$AMG_BUILD
 RUN ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
