@@ -1,12 +1,21 @@
 ARG STEAMCMD_VERSION=latest
 ARG AMG_BUILD=latest
 ARG AMG_VERSION=v1.6.57
-FROM thmhoag/steamcmd:$STEAMCMD_VERSION AS base
+FROM drpsychick/steamcmd:$STEAMCMD_VERSION AS base
 
 USER root
 
 RUN apt-get update \
-    && apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo \
+    && apt-get install -y \
+    curl \
+    cron \
+    bzip2 \
+    perl-modules \
+    lsof \
+    libc6-i386 \
+    lib32gcc1 \
+    libsdl2-2.0.0:i386 \
+    sudo \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
@@ -60,6 +69,7 @@ VOLUME /home/steam/.steam/steamapps
 VOLUME /ark
 # optionally shared volumes between servers in a cluster
 VOLUME /arkserver
-VOLUME /arkclusters
+# mount /arkserver/ShooterGame/Saved seperate for each server
+# mount /arkserver/ShooterGame/Saved/clusters shared for all servers
 
 CMD [ "./run.sh" ]

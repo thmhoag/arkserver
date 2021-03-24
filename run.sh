@@ -2,6 +2,7 @@
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 REPODIR="$(dirname "$SCRIPTDIR")"
+ARKSERVER=${ARKSERVER_SHARED:-"/ark/server"}
 
 # always fail script if a cmd fails
 set -eo pipefail
@@ -11,34 +12,60 @@ echo "# Ark Server - " `date`
 echo "###########################################################################"
 
 echo "Ensuring correct permissions..."
-sudo find /ark -not -user steam -o -not -group steam -exec chown -v steam:steam {} \; 
+sudo find /ark -not -user steam -o -not -group steam -exec chown -v steam:steam {} \;
 sudo find /home/steam -not -user steam -o -not -group steam -exec chown -v steam:steam {} \;
+
+if [ -n "$ARKSERVER_SHARED" ]; then
+  # directory is created when something is mounted to 'Saved'
+  [ -d "$ARKSERVER_SHARED/ShooterGame" ] && sudo chown steam:steam $ARKSERVER_SHARED/ShooterGame
+  echo "Shared server files in $ARKSERVER_SHARED..."
+  if [ -z "$(mount | grep "on $ARKSERVER_SHARED/ShooterGame/Saved ")" ]; then
+    echo "===> ABORT !"
+    echo "You seem to be using a shared server directory: '$ARKSERVER_SHARED'"
+    echo "But you have NOT mounted your game instance saved directory to '$ARKSERVER_SHARED/ShooterGame/Saved'"
+    exit 1
+  fi
+fi
+
+if [ "$ARKCLUSTER" = "true" ]; then
+  # directory is created when something is mounted to 'clusters'
+  [ -d "$ARKSERVER_SHARED/ShooterGame/Saved" ] && chown steam:steam $ARKSERVER_SHARED/ShooterGame/Saved
+  echo "Shared clusters files in $ARKSERVER_SHARED/ShooterGame/Saved/clusters..."
+  if [ -z "$(mount | grep "on $ARKSERVER_SHARED/ShooterGame/Saved/clusters ")" ]; then
+    echo "===> ABORT !"
+    echo "You seem to using ARKCLUSTER=true"
+    echo "But you have NOT mounted your shared clusters directory to '$ARKSERVER_SHARED/ShooterGame/Saved/clusters'"
+    exit 1
+  fi
+fi
 
 # Remove arkmanager tracking files if they exist
 # They can cause issues with starting the server multiple times
 # due to the restart command not completing when the container exits
 echo "Cleaning up any leftover arkmanager files..."
-[ -f /ark/server/ShooterGame/Saved/.ark-warn-main.lock ] && rm -rf /ark/server/ShooterGame/Saved/.ark-warn-main.lock
-[ -f /ark/server/ShooterGame/Saved/.ark-update.lock ] && rm -rf /ark/server/ShooterGame/Saved/.ark-update.lock
-[ -f /ark/server/ShooterGame/Saved/.ark-update.time ] && rm -rf /ark/server/ShooterGame/Saved/.ark-update.time
-[ -f /ark/server/ShooterGame/Saved/.arkmanager-main.pid ] && rm -rf /ark/server/ShooterGame/Saved/.arkmanager-main.pid
-[ -f /ark/server/ShooterGame/Saved/.arkserver-main.pid ] && rm -rf /ark/server/ShooterGame/Saved/.arkserver-main.pid
-[ -f /ark/server/ShooterGame/Saved/.autorestart ] && rm -rf /ark/server/ShooterGame/Saved/.autorestart
-[ -f /ark/server/ShooterGame/Saved/.autorestart-main ] && rm -rf /ark/server/ShooterGame/Saved/.autorestart-main
+[ -f $ARKSERVER/ShooterGame/Saved/.ark-warn-main.lock ] && rm -rf $ARKSERVER/ShooterGame/Saved/.ark-warn-main.lock
+[ -f $ARKSERVER/ShooterGame/Saved/.ark-update.lock ] && rm -rf $ARKSERVER/ShooterGame/Saved/.ark-update.lock
+[ -f $ARKSERVER/ShooterGame/Saved/.ark-update.time ] && rm -rf $ARKSERVER/ShooterGame/Saved/.ark-update.time
+[ -f $ARKSERVER/ShooterGame/Saved/.arkmanager-main.pid ] && rm -rf $ARKSERVER/ShooterGame/Saved/.arkmanager-main.pid
+[ -f $ARKSERVER/ShooterGame/Saved/.arkserver-main.pid ] && rm -rf $ARKSERVER/ShooterGame/Saved/.arkserver-main.pid
+[ -f $ARKSERVER/ShooterGame/Saved/.autorestart ] && rm -rf $ARKSERVER/ShooterGame/Saved/.autorestart
+[ -f $ARKSERVER/ShooterGame/Saved/.autorestart-main ] && rm -rf $ARKSERVER/ShooterGame/Saved/.autorestart-main
 
 # Create directories if they don't exist
 [ ! -d /ark/config ] && mkdir /ark/config
 [ ! -d /ark/log ] && mkdir /ark/log
 [ ! -d /ark/backup ] && mkdir /ark/backup
 [ ! -d /ark/staging ] && mkdir /ark/staging
-[ ! -d /ark/saved ] && mkdir /ark/saved
 
-# migrate to new directory structure
-if [ -d /ark/server/ShooterGame/Saved ]; then
-  # move to /ark/saved
-  mv /ark/server/ShooterGame/Saved/* /ark/saved/ && ln -sf /ark/saved /ark/server/ShooterGame/Saved
+if [ ! -d $ARKSERVER/ShooterGame/Binaries ]; then
+	echo "No game files found. Preparing for install..."
+	mkdir -p $ARKSERVER/ShooterGame
+  mkdir -p $ARKSERVER/ShooterGame/Saved/Config/LinuxServer
+  mkdir -p $ARKSERVER/ShooterGame/Saved/$am_ark_AltSaveDirectoryName
+	mkdir -p $ARKSERVER/ShooterGame/Content/Mods
+	mkdir -p $ARKSERVER/ShooterGame/Binaries/Linux/
 fi
-[ ! -d /ark/saved/$am_ark_AltSaveDirectoryName ] && mkdir /ark/saved/$am_ark_AltSaveDirectoryName
+
 
 echo "Creating arkmanager.cfg from environment variables..."
 echo -e "# Ark Server Tools - arkmanager config\n# Generated from container environment variables\n\n" > /ark/config/arkmanager.cfg
@@ -46,31 +73,8 @@ if [ -f /ark/config/arkmanager_base.cfg ]; then
 	cat /ark/config/arkmanager_base.cfg >> /ark/config/arkmanager.cfg
 fi
 
-if [ -n "$ARKSERVER_SHARED" -a -d "$ARKSERVER_SHARED" ]; then
-  if [ ! -L /ark/server ]; then
-    # migration: move files
-    if [ ! -f $ARKSERVER_SHARED/ShooterGame/Binaries/Linux/ShooterGameServer -a -f /ark/server/ShooterGame/Binaries/Linux/ShooterGameServer ]; then
-      mv /ark/server/* $ARKSERVER_SHARED/
-    fi
-    # shared server files in this directory
-    ln -sf $ARKSERVER_SHARED /ark/server
-  fi
-  # shared server files requires disabling staging
-  export am_arkStagingDir=
-fi
-
-echo -e "\n\narkserverroot=\"/ark/server\"\n" >> /ark/config/arkmanager.cfg
+echo -e "\n\narkserverroot=\"$ARKSERVER\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
-
-if [ ! -d /ark/server/ShooterGame ]; then
-	echo "No game files found. Installing..."
-	mkdir -p /ark/server/ShooterGame
-	# whole `Saved` directory must be kept separate per server
-	ln -sf /ark/saved /ark/server/ShooterGame/Saved
-  mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
-	mkdir -p /ark/server/ShooterGame/Content/Mods
-	mkdir -p /ark/server/ShooterGame/Binaries/Linux/
-fi
 
 if [ ! -f /ark/config/crontab ]; then
 	echo "Creating crontab..."
@@ -110,18 +114,17 @@ else
 fi
 
 # Create symlinks for configs
-# INFO: this is no longer needed and kept only for backwards compatibility. Simply edit your config in the `/ark/saved` directory
-[ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt /ark/server/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
-[ -f /ark/config/Engine.ini ] && ln -sf /ark/config/Engine.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Engine.ini
-[ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
-[ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
+[ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt $ARKSERVER/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
+[ -f /ark/config/Engine.ini ] && ln -sf /ark/config/Engine.ini $ARKSERVER/ShooterGame/Saved/Config/LinuxServer/Engine.ini
+[ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini $ARKSERVER/ShooterGame/Saved/Config/LinuxServer/Game.ini
+[ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini $ARKSERVER/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
-if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_serverMap" ]]; then
-	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
+if [ "$VALIDATE_SAVE_EXISTS" = "true" -a ! -z "$am_serverMap" ]; then
+	savepath="$ARKSERVER/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
 	savefile="$am_serverMap.ark"
 	echo "Validating that a save file exists for $am_serverMap"
 	echo "Checking $savepath"
-	if [[ ! -f "$savepath/$savefile" ]]; then
+	if [! -f "$savepath/$savefile" ]; then
 		echo "$savefile not found!"
 		echo "Attempting to notify via Discord..."
 		arkmanager notify "Critical error: unable to find $savefile in $savepath!"
@@ -136,12 +139,7 @@ else
 	echo "Save file validation is not enabled."
 fi
 
-if [[ "$ARKCLUSTER" = true ]]; then
-  # link shared cluster directory
-  [ ! -L /ark/server/ShooterGame/Saved/clusters ] && ln -sf /arkclusters /ark/server/ShooterGame/Saved/clusters
-fi
-
-if [[ $BACKUP_ONSTART = true ]]; then
+if [ "$BACKUP_ONSTART" = "true" ]; then
 	echo "Backing up on start..."
 	arkmanager backup
 else
@@ -162,6 +160,21 @@ trap stop TERM
 # log from RCON to stdout
 if [ $LOG_RCONCHAT -gt 0 ]; then
   bash -c ./log.sh &
+fi
+
+if [ "$LIST_MOUNTS" = "true" ]; then
+  echo "LIST Mounts:"
+  echo "ARKSERVER_SHARED=$ARKSERVER_SHARED ARKCLUSTER=$ARKCLUSTER"
+  for d in /ark $ARKSERVER_SHARED $ARKSERVER/ShooterGame/Saved/ $ARKSERVER/ShooterGame/Saved/SavedArks; do
+    echo "--> $d"
+    ls -la $d
+  done
+  if [ "$ARKCLUSTER" = "true" ]; then
+    echo "--> $ARKSERVER/ShooterGame/Saved/clusters"
+    ls -la $ARKSERVER/ShooterGame/Saved/clusters
+  fi
+  mount | grep "on /ark"
+  exit 0
 fi
 
 arkmanager start --no-background --verbose &
