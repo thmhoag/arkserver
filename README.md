@@ -126,7 +126,7 @@ mkdir -p theisland ragnarok arkserver arkclusters theisland/saved ragnarok/saved
 
 # start server 1
 serverdir=theisland
-docker run -it --name $serverdir \
+docker run --rm -it --name $serverdir \
   --env-file test/ark-$serverdir.env \
   -v $PWD/$serverdir:/ark \
   -v $PWD/$serverdir/saved:/arkserver/ShooterGame/Saved \
@@ -140,13 +140,13 @@ docker run -it --name $serverdir \
 # start server 2
 # using the SAME `arkserver` and `arkclusters` directory
 serverdir=ragnarok
-docker run -it --name $serverdir \
+docker run --rm -it --name $serverdir \
   --env-file test/ark-$serverdir.env \
   -v $PWD/$serverdir:/ark \
   -v $PWD/$serverdir/saved:/arkserver/ShooterGame/Saved \
   -v $PWD/arkclusters:/arkserver/ShooterGame/Saved/clusters \
   -v $PWD/arkserver:/arkserver \
-  -p 27015:27016/udp -p 7780:7780/udp -p 32331:32331 \
+  -p 27016:27016/udp -p 7780:7780/udp -p 32331:32331 \
   $IMAGE:$TAG
 
 # now you can reach your servers on 27015 and 27016 respectively
