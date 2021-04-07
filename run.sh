@@ -25,6 +25,8 @@ if [ -n "$ARKSERVER_SHARED" ]; then
     echo "But you have NOT mounted your game instance saved directory to '$ARKSERVER_SHARED/ShooterGame/Saved'"
     exit 1
   fi
+  # Shared server files does not support staging directory
+  export am_arkStagingDir=
 fi
 
 if [ "$ARKCLUSTER" = "true" ]; then

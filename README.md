@@ -113,3 +113,44 @@ Inside the `/ark` volume there are several directories containing server related
 | /ark/log | Location of the arkmanager and arkserver log files |
 | /ark/server | Location of the server installation performed by `steamcmd`. This will contain the ShooterGame directory and the actual server binaries. |
 | /ark/staging | Default directory for staging game and mod updates. Can be changed using in `arkmanager.cfg` |
+
+## Running a cluster
+In order to run an ARK cluster, all you need are multiple servers sharing the `clusters` directory - and a lot of RAM.
+Additionally you can share the server files, so that all servers use the same version and you don't have to store identical files twice on disk.
+
+Example: (using the .env files in `/test`)
+```shell script
+IMAGE=thmhoag/arkcluster
+TAG=bionic
+mkdir -p theisland ragnarok arkserver arkclusters theisland/saved ragnarok/saved
+
+# start server 1
+serverdir=theisland
+docker run -it --name $serverdir \
+  --env-file test/ark-$serverdir.env \
+  -v $PWD/$serverdir:/ark \
+  -v $PWD/$serverdir/saved:/arkserver/ShooterGame/Saved \
+  -v $PWD/arkclusters:/arkserver/ShooterGame/Saved/clusters \
+  -v $PWD/arkserver:/arkserver \
+  -p 27015:27015/udp -p 7778:7778/udp -p 32330:32330 \
+  $IMAGE:$TAG
+
+# wait for the server to be up, it should download all mods and the game
+
+# start server 2
+# using the SAME `arkserver` and `arkclusters` directory
+serverdir=ragnarok
+docker run -it --name $serverdir \
+  --env-file test/ark-$serverdir.env \
+  -v $PWD/$serverdir:/ark \
+  -v $PWD/$serverdir/saved:/arkserver/ShooterGame/Saved \
+  -v $PWD/arkclusters:/arkserver/ShooterGame/Saved/clusters \
+  -v $PWD/arkserver:/arkserver \
+  -p 27015:27016/udp -p 7780:7780/udp -p 32331:32331 \
+  $IMAGE:$TAG
+
+# now you can reach your servers on 27015 and 27016 respectively
+
+# cleanup
+rm -rf theisland ragnarok arkserver arkclusters
+```
