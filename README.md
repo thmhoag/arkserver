@@ -122,7 +122,7 @@ store identical files twice on disk.
 
 Example: (using the .env files in `/test`)
 ```shell script
-IMAGE=thmhoag/arkcluster
+IMAGE=thmhoag/arkserver
 TAG=bionic
 mkdir -p theisland ragnarok arkserver arkclusters theisland/saved ragnarok/saved
 
