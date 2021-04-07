@@ -115,8 +115,10 @@ Inside the `/ark` volume there are several directories containing server related
 | /ark/staging | Default directory for staging game and mod updates. Can be changed using in `arkmanager.cfg` |
 
 ## Running a cluster
-In order to run an ARK cluster, all you need are multiple servers sharing the `clusters` directory - and a lot of RAM.
-Additionally you can share the server files, so that all servers use the same version and you don't have to store identical files twice on disk.
+In order to run an ARK cluster, all you need are multiple servers sharing the `clusters` directory and using a shared, 
+unique `clusterid` - and a lot of RAM.
+Additionally you can share the server files, so that all servers use the same version and you don't have to 
+store identical files twice on disk.
 
 Example: (using the .env files in `/test`)
 ```shell script
@@ -124,7 +126,7 @@ IMAGE=thmhoag/arkcluster
 TAG=bionic
 mkdir -p theisland ragnarok arkserver arkclusters theisland/saved ragnarok/saved
 
-# start server 1
+# start server 1 with am_arkAutoUpdateOnStart=true
 serverdir=theisland
 docker run --rm -it --name $serverdir \
   --env-file test/ark-$serverdir.env \
@@ -137,7 +139,7 @@ docker run --rm -it --name $serverdir \
 
 # wait for the server to be up, it should download all mods and the game
 
-# start server 2
+# start server 2+ with am_arkAutoUpdateOnStart=false
 # using the SAME `arkserver` and `arkclusters` directory
 serverdir=ragnarok
 docker run --rm -it --name $serverdir \
