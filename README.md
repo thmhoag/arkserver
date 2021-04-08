@@ -156,3 +156,13 @@ docker run --rm -it --name $serverdir \
 # cleanup
 rm -rf theisland ragnarok arkserver arkclusters
 ```
+
+To test jumping from one server to another:
+* join one server, enable cheats with `enablecheats <adminpassword>`
+* cheat your character the transmitter tek engram `cheat GiveTekengramsTo <survivorID> transmitter`
+* cheat your character a transmitter item `cheat gfi TekTransmitter 1 1 0`
+* place the transmitter, turn it on, enter the inventory -> you should see "travel to another server" button in the middle
+* click it and select the server you want to travel to
+
+The `survivorID` is the number displayed when you hover over the specimen implant (diamond shaped item) 
+you always have (https://ark.fandom.com/wiki/Specimen_Implant). 
