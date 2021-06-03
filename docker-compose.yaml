@@ -15,7 +15,7 @@ services:
     environment:
       am_ark_SessionName: Ark Server #Server name as it will show on the steam server list
       am_serverMap: TheIsland #	Game map to load
-        #valid map strings here todo
+        #example vanilla map strings here TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P and Genesis, CrystalIsles, Gen2
       am_ark_ServerAdminPassword: PLEASE_k3yb04rdc4t_CHANGE_ME #Admin password to be used via ingame console or RCON
       am_ark_MaxPlayers: 70 # 	Max concurrent players in the game
       am_ark_QueryPort: 27015 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
