@@ -77,7 +77,7 @@ This server now operates with default parameters, to change thos open the
 [docker compose file](/docker-compose.yaml) and adapt the parameters to your needs.
 after that you can run the server again with the start command of your liking
 
-####specific troubleshooting
+#### specific troubleshooting
 ensure correct file parameters for the docker user in the parameter where you save your files ( see the docker compose - volumes value)
 
 
