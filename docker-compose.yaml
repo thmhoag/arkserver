@@ -27,7 +27,8 @@ services:
     ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
      - "7777:7777" # second ark server port
      - "7778:7778" # "host:container"
-     - "32330:32330"
+     - "32330:32330" # Rcon port
+     - "27015:27015" # steam  query port
      
      
 volumes:
