@@ -40,7 +40,7 @@ docker pull thmhoag/arkserver:latest
 ```
 
 ### Running the server
-####Running with bare Docker
+#### Running with bare Docker
 
 To run a generic server with no configuration modifications:
 ```bash
@@ -55,7 +55,7 @@ $ docker run -d \
 
 If the exposed ports are modified (in the case of multiple containers/servers on the same host) the `arkmanager` config will need to be modified to reflect the change as well. This is required so that `arkmanager` can properly check the server status and so that the ARK server itself can properly publish its IP address and query port to steam.
 
-### Running with Docker compose
+#### Running with Docker compose
 clone the repository 
 ```bash
 git clone https://github.com/gornoka/arkserver   
@@ -77,7 +77,7 @@ This server now operates with default parameters, to change thos open the
 [docker compose file](/docker-compose.yaml) and adapt the parameters to your needs.
 after that you can run the server again with the start command of your liking
 
-#### specific troubleshooting
+##### specific troubleshooting
 ensure correct file parameters for the docker user in the parameter where you save your files ( see the docker compose - volumes value)
 
 
