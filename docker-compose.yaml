@@ -8,14 +8,14 @@ services:
     # image: thmhoag/arkserver #use this if you do not want to build locally
     volumes:
       - "steam:/home/steam/Steam"
-      - "./ark_server_data_on_host:/ark"
+      - "./ark_server_data_on_host:/ark" # ensure that the docker user has write rwx (7) permissions in this folder
    
     entrypoint: [/home/steam/run.sh]
     env_file: .env # use this file if you want to use other params shared between multiple instances or just to reduce the docker compose size
     environment:
       am_ark_SessionName: Ark Server #Server name as it will show on the steam server list
       am_serverMap: TheIsland #	Game map to load
-        #valid map strings here todo
+        #example vanilla map strings here TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P and Genesis, CrystalIsles, Gen2
       am_ark_ServerAdminPassword: PLEASE_k3yb04rdc4t_CHANGE_ME #Admin password to be used via ingame console or RCON
       am_ark_MaxPlayers: 70 # 	Max concurrent players in the game
       am_ark_QueryPort: 27015 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
@@ -27,7 +27,8 @@ services:
     ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
      - "7777:7777" # second ark server port
      - "7778:7778" # "host:container"
-     - "32330:32330"
+     - "32330:32330" # Rcon port
+     - "27015:27015" # steam  query port
      
      
 volumes:
