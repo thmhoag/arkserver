@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  ark-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ark-server
+    # image: thmhoag/arkserver #use this if you do not want to build locally
+    volumes:
+      - "steam:/home/steam/Steam"
+      - "./ark_server_data_on_host:/ark"
+   
+    entrypoint: [/home/steam/run.sh]
+    environment:
+      am_ark_SessionName: Ark Server #Server name as it will show on the steam server list
+      am_serverMap: TheIsland #	Game map to load
+        #valid map strings here todo
+      am_ark_ServerAdminPassword: PLEASE_k3yb04rdc4t_CHANGE_ME #Admin password to be used via ingame console or RCON
+      am_ark_MaxPlayers: 70 # 	Max concurrent players in the game
+      am_ark_QueryPort: 27015 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
+      am_ark_Port: 7778 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
+      am_ark_RCONPort: 32330 #RCON port DO NOT CHANGE HERE USE ports below
+      am_arkwarnminutes: 15 #Number of minutes to wait/warn players before updating/restarting
+      am_arkflag_crossplay: "false" #Allow crossyplay with Players on Epic
+      # for additional options check ./arkmanager/arkmanager.cfg
+    ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
+     - "7777:7777" # second ark server port
+     - "7778:7778" # "host:container"
+     - "32330:32330"
+     
+     
+volumes:
+  steam:
+  
