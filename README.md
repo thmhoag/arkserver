@@ -58,14 +58,17 @@ If the exposed ports are modified (in the case of multiple containers/servers on
 ### Running with Docker compose
 clone the repository 
 ```bash
-git clone https://github.com/gornoka/arkserver   [comment]: <> todo adapt this after accepted pull request
+git clone https://github.com/gornoka/arkserver   
 ```
+[comment]: <> todo adapt this after accepted pull request
 before running the server it is advised that you check the configuration, especially the volume mapping inside of the container, since the downloaded files are very big
+
+
 run the server 
 ```bash
 # changing to the new directory
 cd arkserver
-# start server interactvely (shuts down when console is closed)
+# start server interactively (shuts down when console is closed)
 docker-compose up 
 #start server and run in background 
 docker-compose up -d
