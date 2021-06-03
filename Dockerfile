@@ -3,16 +3,23 @@ FROM thmhoag/steamcmd:latest
 USER root
 
 RUN apt-get update && \
-    apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo
+    apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo dos2unix
+
+# added dos2unix for compatibility when starting docker with wsl2
 
 RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.54/netinstall.sh" | bash -s steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
+RUN dos2unix  /etc/arkmanager/arkmanager.cfg
 COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
-COPY run.sh /home/steam/run.sh
-COPY log.sh /home/steam/log.sh
+RUN dos2unix /etc/arkmanager/instances/main.cfg
 
+COPY run.sh /home/steam/run.sh
+RUN dos2unix /home/steam/run.sh
+
+COPY log.sh /home/steam/log.sh
+RUN dos2unix /home/steam/log.sh
 RUN mkdir /ark && \
     chown -R steam:steam /home/steam/ /ark
 
