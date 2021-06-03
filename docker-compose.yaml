@@ -8,7 +8,7 @@ services:
     # image: thmhoag/arkserver #use this if you do not want to build locally
     volumes:
       - "steam:/home/steam/Steam"
-      - "./ark_server_data_on_host:/ark"
+      - "./ark_server_data_on_host:/ark" # ensure that the docker user has write rwx (7) permissions in this folder
    
     entrypoint: [/home/steam/run.sh]
     env_file: .env # use this file if you want to use other params shared between multiple instances or just to reduce the docker compose size
