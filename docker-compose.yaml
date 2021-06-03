@@ -11,6 +11,7 @@ services:
       - "./ark_server_data_on_host:/ark"
    
     entrypoint: [/home/steam/run.sh]
+    env_file: .env # use this file if you want to use other params shared between multiple instances or just to reduce the docker compose size
     environment:
       am_ark_SessionName: Ark Server #Server name as it will show on the steam server list
       am_serverMap: TheIsland #	Game map to load
