@@ -29,7 +29,9 @@ services:
      - "7778:7778" # "host:container"
      - "32330:32330" # Rcon port
      - "27015:27015" # steam  query port
-     
+     - "7777:7777/udp" # second ark server port
+     - "7778:7778/udp" # "host:container"
+     - "27015:27015/udp"# steam  query port
      
 volumes:
   steam:
