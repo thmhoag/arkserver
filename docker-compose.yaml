@@ -24,6 +24,9 @@ services:
       am_arkwarnminutes: 15 #Number of minutes to wait/warn players before updating/restarting
       am_arkflag_crossplay: "false" #Allow crossyplay with Players on Epic
       # for additional options check ./arkmanager/arkmanager.cfg
+      # example adding mods :
+      #am_ark_GameModIds: "2508593144,731604991,1941328406,849372965" 
+    restart: unless-stopped
     ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
      - "7777:7777" # second ark server port
      - "7778:7778" # "host:container"
