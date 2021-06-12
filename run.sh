@@ -32,11 +32,11 @@ fi
 if [ "$ARKCLUSTER" = "true" ]; then
   # directory is created when something is mounted to 'clusters'
   [ -d "$ARKSERVER/ShooterGame/Saved" ] && chown steam:steam $ARKSERVER/ShooterGame/Saved
-  echo "Shared clusters files in $ARKSERVER_SHARED/ShooterGame/Saved/clusters..."
-  if [ -z "$(mount | grep "on $ARKSERVER_SHARED/ShooterGame/Saved/clusters ")" ]; then
+  echo "Shared clusters files in $ARKSERVER/ShooterGame/Saved/clusters..."
+  if [ -z "$(mount | grep "on $ARKSERVER/ShooterGame/Saved/clusters ")" ]; then
     echo "===> ABORT !"
     echo "You seem to using ARKCLUSTER=true"
-    echo "But you have NOT mounted your shared clusters directory to '$ARKSERVER_SHARED/ShooterGame/Saved/clusters'"
+    echo "But you have NOT mounted your shared clusters directory to '$ARKSERVER/ShooterGame/Saved/clusters'"
     exit 1
   fi
 fi
