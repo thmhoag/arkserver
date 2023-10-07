@@ -1,17 +1,35 @@
-FROM thmhoag/steamcmd:latest
+FROM cm2network/steamcmd
+# this finishes some steamcmd first time setup things, so that we don't have to run them everytime we start the container
+# ,originally done by old init parent container
+RUN /home/steam/steamcmd/steamcmd.sh +quit
 
 USER root
-
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-    apt-get install -y curl cron bzip2 perl-modules lsof libc6-i386 lib32gcc1 sudo dos2unix
+    apt-get install -y perl-modules \
+    curl \
+    lsof \
+    libc6-i386 \
+    libgcc1 \
+    bzip2 \
+    dos2unix \
+    sudo \
+    findutils \
+    perl\
+    rsync\
+    sed\
+    tar\
+    cron
 
 # added dos2unix for compatibility when starting docker with wsl2
 
-RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.54/netinstall.sh" | bash -s steam && \
-    ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
+RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.62/netinstall.sh" | bash -s steam && \
+    ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager &&\
+    ln -s   /home/steam/steamcmd /usr/local/bin
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 RUN dos2unix  /etc/arkmanager/arkmanager.cfg
+
 COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
 RUN dos2unix /etc/arkmanager/instances/main.cfg
 
@@ -20,6 +38,7 @@ RUN dos2unix /home/steam/run.sh
 
 COPY log.sh /home/steam/log.sh
 RUN dos2unix /home/steam/log.sh
+
 RUN mkdir /ark && \
     chown -R steam:steam /home/steam/ /ark
 
