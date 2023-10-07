@@ -4,8 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ark-server
-    # image: thmhoag/arkserver #use this if you do not want to build locally
+    image: gornoka/arkserver:latest
     volumes:
       - "steam:/home/steam/Steam"
       - "./ark_server_data_on_host:/ark" # ensure that the docker user has write rwx (7) permissions in this folder
@@ -19,12 +18,12 @@ services:
       am_ark_ServerAdminPassword: PLEASE_k3yb04rdc4t_CHANGE_ME #Admin password to be used via ingame console or RCON
       am_ark_MaxPlayers: 70 # 	Max concurrent players in the game
       am_ark_QueryPort: 27015 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
-      am_ark_Port: 7778 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
-      am_ark_RCONPort: 32330 #RCON port DO NOT CHANGE HERE USE ports below
+      am_ark_Port: 7778 # Game server port (allows clients to connect to the server) THIS MUST MATCH THE PORTS BELOW, AS THEY ARE ADVERTISED TO STEAM
+      am_ark_RCONPort: 32330 #RCON port THIS MUST MATCH THE PORTS BELOW, AS THEY ARE ADVERTISED TO STEAM
       am_arkwarnminutes: 15 #Number of minutes to wait/warn players before updating/restarting
       am_arkflag_crossplay: "false" #Allow crossyplay with Players on Epic
       # for additional options check ./arkmanager/arkmanager.cfg
-      # example adding mods :
+      # example adding mods:
       #am_ark_GameModIds: "2508593144,731604991,1941328406,849372965" 
     restart: unless-stopped
     ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
