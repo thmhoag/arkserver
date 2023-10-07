@@ -1,5 +1,5 @@
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/thmhoag/arkserver?style=flat-square)](https://hub.docker.com/r/gornoka/arkserver/builds/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/thmhoag/arkserver.svg?style=flat-square)](https://hub.docker.com/r/gornoka/arkserver/) 
+![Latest Docker Build](https://img.shields.io/github/actions/workflow/status/gornoka/arkserver/docker-build.yaml)
+![Docker Pulls](https://img.shields.io/docker/pulls/gornoka/arkserver) 
 [![License](https://img.shields.io/dub/l/vibe-d.svg?style=flat-square)](https://github.com/gornoka/arkserver/blob/master/LICENSE)
 
 
