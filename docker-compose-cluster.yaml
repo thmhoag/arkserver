@@ -1,0 +1,101 @@
+version: "3.9"
+# common settings that apply for all servers in your cluster
+x-common-environment: &common-environment
+    am_ark_ServerAdminPassword: THIS_SHOULD_BE_CHANGED #Admin password to be used via ingame console or RCON
+    am_ark_MaxPlayers: 20 # 	Max concurrent players in the game
+    am_arkwarnminutes: 15 #Number of minutes to wait/warn players before updating/restarting
+    am_arkflag_crossplay: "false" #Allow crossyplay with Players on Epic
+    am_ark_GameModIds: "" # "111111111,222222222,333333333" # comma separated list of mod ids
+    am_arkopt_ClusterDirOverride: /cluster
+    # change this cluster id to something unique for your cluster
+    am_arkopt_clusterid: 111111aaaaaa2222222bbbbbbbb333334
+    am_arkflag_NoTransferFromFiltering: "true"
+    am_arkflag_structurememopts: "true"
+    # for additional options check ./arkmanager/arkmanager.cfg
+
+services:
+  ark-server_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gornoka/arkserver:latest
+    # image: thmhoag/arkserver #use this if you do not want to build locally
+    volumes:
+      - "steam:/home/steam/Steam"
+      - "/var/docker-volumes/games/ark_cluster/server1:/ark"
+      - "/var/docker-volumes/games/ark_cluster/server1:/cluster"
+    command: [/home/steam/run.sh]
+    restart: unless-stopped
+
+    environment:
+      <<: *common-environment
+      am_ark_QueryPort: 27025 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
+      am_ark_Port: 7791 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
+      am_ark_RCONPort: 32340 #RCON port DO NOT CHANGE HERE USE ports below
+      am_ark_SessionName: chilled_ark_1 #Server name as it will show on the steam server list
+      #example vanilla map strings here TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P and Genesis, CrystalIsles, Gen2
+      am_serverMap: TheIsland #	Game map to load
+      # DEBUG: "true"
+    ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
+     - "7790:7790/udp" # second ark server port
+     - "7791:7791/udp" # "host:container"
+     - "27025:27025/udp" # steam  query port
+     - "32340:32340" # Rcon port
+
+  ark-server_2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gornoka/arkserver:latest
+    # image: thmhoag/arkserver #use this if you do not want to build locally
+    volumes:
+      - "steam:/home/steam/Steam"
+      - "/var/docker-volumes/games/ark_cluster/server2:/ark"
+      - "/var/docker-volumes/games/ark_cluster/server2:/cluster"
+    command: [/home/steam/run.sh]
+    restart: unless-stopped
+
+    environment:
+      <<: *common-environment
+      am_ark_QueryPort: 27026 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
+      am_ark_Port: 7793 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
+      am_ark_RCONPort: 32341 #RCON port DO NOT CHANGE HERE USE ports below
+      am_ark_SessionName: chilled_ark_2 #Server name as it will show on the steam server list
+      am_serverMap: LostIsland #	Game map to load
+      # DEBUG: "true"
+    ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
+     - "7792:7792/udp" # second ark server port
+     - "7793:7793/udp" # "host:container"
+     - "27026:27026/udp" # steam  query port
+     - "32341:32341" # Rcon port
+
+
+  ark-server_3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gornoka/arkserver:latest
+    # image: thmhoag/arkserver #use this if you do not want to build locally
+    volumes:
+      - "steam:/home/steam/Steam"
+      - "/var/docker-volumes/games/ark_cluster/server3:/ark"
+      - "/var/docker-volumes/games/ark_cluster/server3:/cluster"
+    command: [/home/steam/run.sh]
+    restart: unless-stopped
+
+    environment:
+      <<: *common-environment
+      am_ark_QueryPort: 27027 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
+      am_ark_Port: 7795 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
+      am_ark_RCONPort: 32340 #RCON port DO NOT CHANGE HERE USE ports below
+      am_ark_SessionName: chilled_ark_2 #Server name as it will show on the steam server list
+      am_serverMap: Gen2 #	Game map to load
+      # DEBUG: "true"
+    ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
+     - "7794:7794/udp" # second ark server port
+     - "7795:7795/udp" # "host:container"
+     - "27027:27027/udp" # steam  query port
+     - "32342:32342" # Rcon port
+
+volumes:
+  steam:

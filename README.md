@@ -1,19 +1,23 @@
-[![Travis CI Build Status](https://img.shields.io/travis/thmhoag/arkserver/master?label=Travis%20CI&style=flat-square)](https://travis-ci.org/github/thmhoag/arkserver)
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/thmhoag/arkserver?style=flat-square)](https://hub.docker.com/r/thmhoag/arkserver/builds/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/thmhoag/arkserver.svg?style=flat-square)](https://hub.docker.com/r/thmhoag/arkserver/) 
-[![License](https://img.shields.io/dub/l/vibe-d.svg?style=flat-square)](https://github.com/thmhoag/arkserver/blob/master/LICENSE)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/thmhoag/arkserver?style=flat-square)](https://hub.docker.com/r/gornoka/arkserver/builds/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/thmhoag/arkserver.svg?style=flat-square)](https://hub.docker.com/r/gornoka/arkserver/) 
+[![License](https://img.shields.io/dub/l/vibe-d.svg?style=flat-square)](https://github.com/gornoka/arkserver/blob/master/LICENSE)
 
 
 # arkserver
 ```
-Docker image for a dedicated ARK Server with arkmanager.
+Docker image for a dedicated ARK Server with ARK manager.
 ```
 
 ## Overview
 
-This is an image for running an ARK: Survival Evolved server in a Docker container. It is heavily based off of [TuRz4m](https://github.com/TuRz4m)'s work located here: [TuRz4m/Ark-docker](https://github.com/TuRz4m/Ark-docker). It uses [FezVrasta](https://github.com/FezVrasta)'s [arkmanager](https://github.com/FezVrasta/ark-server-tools) (ark-server-tools) to managed a single-instance ARK: Survival Evolved server inside a docker container.
+This is an image for running an ARK: Survival Evolved server in a Docker container, 
+and some compose files to make cluster hosting easier.
 
-This image inherits from the [thmhoag/steamcmd](https://github.com/thmhoag/steamcmd) image to include the latest version of `steamcmd`.
+This is based upon the work of [thmhoag](https://github.com/thmhoag/arkserver).
+
+It is heavily based off of [TuRz4m](https://github.com/TuRz4m)'s work located here: [TuRz4m/Ark-docker](https://github.com/TuRz4m/Ark-docker). It uses [FezVrasta](https://github.com/FezVrasta)'s [arkmanager](https://github.com/FezVrasta/ark-server-tools) (ark-server-tools) to managed a single-instance ARK: Survival Evolved server inside a docker container.
+
+This image inherits from the [cm2network/steamcmd](https://github.com/CM2Walki/steamcmd) image to include the latest version of `steamcmd`.
 
 For more information on `arkmanager`, see the repo here: https://github.com/FezVrasta/ark-server-tools
 
@@ -25,10 +29,14 @@ For more information on `arkmanager`, see the repo here: https://github.com/FezV
 * Inherently includes all features present in `arkmanager`
 
 ### Tags
-| Tag | Description |
-|--|--|
-| latest | most recent build from the master branch |
-| x.x.x (semver) | release builds |
+| Tag            | Description                                                    |
+|----------------|----------------------------------------------------------------|
+| latest         | most recent build from the master branch                       |
+| x.x.x (semver) | release builds                                                 |
+| master         | latest version immediately triggered after push to main branch |
+| YYYYMM         | most recent daily build of that month                          |
+
+
 
 ## Usage
 
@@ -39,8 +47,8 @@ Pull the latest (or any other desired version):
 docker pull thmhoag/arkserver:latest
 ```
 
-### Running the server
-#### Running with bare Docker
+### Running with bare Docker
+This is not recommended for actual usage, but is useful for testing and development
 
 To run a generic server with no configuration modifications:
 ```bash
@@ -50,36 +58,63 @@ $ docker run -d \
     -p 27015:27015 -p 27015:27015/udp \  # steam query port
     -p 7778:7778 -p 7778:7778/udp \  # gameserver port
     -p 7777:7777 -p 7777:7777/udp \ # gameserver port
-    thmhoag/arkserver
+    gornoka/arkserver
 ```
 
 If the exposed ports are modified (in the case of multiple containers/servers on the same host) the `arkmanager` config will need to be modified to reflect the change as well. This is required so that `arkmanager` can properly check the server status and so that the ARK server itself can properly publish its IP address and query port to steam.
 
-#### Running with Docker compose
+### Running with Docker compose
 clone the repository 
 ```bash
 git clone https://github.com/gornoka/arkserver   
 ```
-[comment]: <> todo adapt this after accepted pull request
-before running the server it is advised that you check the configuration, especially the volume mapping inside of the container, since the downloaded files are very big
+before running the server it is advised that you check the configuration, 
+especially the volume mappings inside the container, 
+since the downloaded files are very big.
+
+Treat this compose file as an example, you can create your own compose files from this one.
+To run multiple Ark servers on one server you can create multiple services in the compose file.
+Change ports and volume mappings accordingly. 
+There is an example for this in the [cluster compose file](./docker-compose-cluster.yaml).
 
 
-run the server 
+#### run single ark server
 ```bash
 # changing to the new directory
 cd arkserver
 # start server interactively (shuts down when console is closed)
-docker-compose up 
-#start server and run in background 
-docker-compose up -d
+docker compose up 
+# start server and run in background 
+docker compose up -d
 ```
-This server now operates with default parameters, to change thos open the 
+This server now operates with default parameters, to change those open the 
 [docker compose file](/docker-compose.yaml) and adapt the parameters to your needs.
-after that you can run the server again with the start command of your liking
+After that, you can run the server again with the start command of your liking
+
+#### run ark cluster
+starting the example config :
+```bash
+cd arkserver
+docker compose -f docker-compose-cluster.yaml up -d
+
+```
+ports for ARK are a little weird, so you have to use the following ports for the servers:
+
+| port  | usage                                                                                |
+|-------|--------------------------------------------------------------------------------------|
+| 27015 | Steam query port                                                                     |
+| 7778  | primary port                                                                         |
+| 7777  | secondary port, this port is inferred by ARK servermanager it is the primary port -1 |
+| 32340 | rcon port, only forward this if you need the RCON                                    |
+
+if you have multiple ARK servers in your cluster you must assign unique ports to each server,do not use the docker compose
+ports parameter to change the host and container ports, steams server browser relies on you configuring the same port
+once in the env param for the ARK server manager 'am_ark_Port: 7791' and once in the ports section '7791:7791/udp'.
+Do not forge the UDP part, it is important for the server to work.
+
 
 ##### specific troubleshooting
 ensure correct file parameters for the docker user in the parameter where you save your files ( see the docker compose - volumes value)
-
 
 ## Environment Variables
 
