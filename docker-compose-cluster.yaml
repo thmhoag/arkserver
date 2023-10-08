@@ -41,6 +41,10 @@ services:
      - "7791:7791/udp" # "host:container"
      - "27025:27025/udp" # steam  query port
      - "32340:32340" # Rcon port
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
 
   ark-server_2:
     build:
@@ -68,7 +72,10 @@ services:
      - "7793:7793/udp" # "host:container"
      - "27026:27026/udp" # steam  query port
      - "32341:32341" # Rcon port
-
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
 
   ark-server_3:
     build:
@@ -96,6 +103,10 @@ services:
      - "7795:7795/udp" # "host:container"
      - "27027:27027/udp" # steam  query port
      - "32342:32342" # Rcon port
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
 
 volumes:
   steam:

@@ -21,11 +21,16 @@ RUN apt-get update && \
     tar\
     cron
 
-# added dos2unix for compatibility when starting docker with wsl2
+COPY ark-server-tools ./ark-server-tools-install
 
-RUN curl -sL "https://raw.githubusercontent.com/FezVrasta/ark-server-tools/v1.6.62/netinstall.sh" | bash -s steam && \
+RUN find . -type f -print0 | xargs -0 dos2unix &&\
+    cd ./ark-server-tools-install/tools && \
+    bash ./install.sh steam && \
     ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager &&\
-    ln -s   /home/steam/steamcmd /usr/local/bin
+    ln -s   /home/steam/steamcmd /usr/local/bin &&\
+    cd ../.. &&\
+    rm -r ./ark-server-tools-install
+
 
 COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 RUN dos2unix  /etc/arkmanager/arkmanager.cfg

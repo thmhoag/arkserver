@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gornoka/arkserver:latest
+    image: gornoka/arkserver:debug
     volumes:
       - "steam:/home/steam/Steam"
       - "./ark_server_data_on_host:/ark" # ensure that the docker user has write rwx (7) permissions in this folder
@@ -34,7 +34,10 @@ services:
      - "7777:7777/udp" # second ark server port
      - "7778:7778/udp" # "host:container"
      - "27015:27015/udp"# steam  query port
-     
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
 volumes:
   steam:
   

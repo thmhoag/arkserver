@@ -1,0 +1,3 @@
+[submodule "ark-server-tools"]
+	path = ark-server-tools
+	url = https://github.com/arkmanager/ark-server-tools.git

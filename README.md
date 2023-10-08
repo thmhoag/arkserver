@@ -58,6 +58,7 @@ $ docker run -d \
     -p 27015:27015 -p 27015:27015/udp \  # steam query port
     -p 7778:7778 -p 7778:7778/udp \  # gameserver port
     -p 7777:7777 -p 7777:7777/udp \ # gameserver port
+    --ulimit nofile=10000:10000 \  # reduce ulimit to prevent lsof from taking forever
     gornoka/arkserver
 ```
 
@@ -78,7 +79,7 @@ Change ports and volume mappings accordingly.
 There is an example for this in the [cluster compose file](./docker-compose-cluster.yaml).
 
 
-#### run single ark server
+#### Run a single ARK server
 ```bash
 # changing to the new directory
 cd arkserver
@@ -91,7 +92,7 @@ This server now operates with default parameters, to change those open the
 [docker compose file](/docker-compose.yaml) and adapt the parameters to your needs.
 After that, you can run the server again with the start command of your liking
 
-#### run ark cluster
+#### Run an ARK cluster
 starting the example config :
 ```bash
 cd arkserver
@@ -113,24 +114,24 @@ once in the env param for the ARK server manager 'am_ark_Port: 7791' and once in
 Do not forge the UDP part, it is important for the server to work.
 
 
-##### specific troubleshooting
+#### specific troubleshooting
 ensure correct file parameters for the docker user in the parameter where you save your files ( see the docker compose - volumes value)
 
 ## Environment Variables
 
 A set of required environment variables have default values provided as part of the image:
 
-| Variable | Value | Description |
-| - | - | - |
-| am_ark_SessionName | `Ark Server` | Server name as it will show on the steam server list |
-| am_serverMap | `TheIsland` | Game map to load |
-| am_ark_ServerAdminPassword | `k3yb04rdc4t` | Admin password to be used via ingame console or RCON |
-| am_ark_MaxPlayers | `70` | Max concurrent players in the game |
-| am_ark_QueryPort | `27015` | Steam query port (allows the server to show up on the steam list) |
-| am_ark_Port | `7778` | Game server port (allows clients to connect to the server) |
-| am_ark_RCONPort | `32330` | RCON port |
-| am_arkwarnminutes | `15` | Number of minutes to wait/warn players before updating/restarting |
-| am_arkflag_crossplay | `false` | Allow crossyplay with Players on Epic |
+| Variable                   | Value         | Description                                                       |
+|----------------------------|---------------|-------------------------------------------------------------------|
+| am_ark_SessionName         | `Ark Server`  | Server name as it will show on the steam server list              |
+| am_serverMap               | `TheIsland`   | Game map to load                                                  |
+| am_ark_ServerAdminPassword | `k3yb04rdc4t` | Admin password to be used via ingame console or RCON              |
+| am_ark_MaxPlayers          | `70`          | Max concurrent players in the game                                |
+| am_ark_QueryPort           | `27015`       | Steam query port (allows the server to show up on the steam list) |
+| am_ark_Port                | `7778`        | Game server port (allows clients to connect to the server)        |
+| am_ark_RCONPort            | `32330`       | RCON port                                                         |
+| am_arkwarnminutes          | `15`          | Number of minutes to wait/warn players before updating/restarting |
+| am_arkflag_crossplay       | `false`       | Allow crossyplay with Players on Epic                             |
 
 ### Adding Additional Variables
 
@@ -142,19 +143,19 @@ For a complete list of configuration values available, please see [FezVrasta](ht
 
 This image has two main volumes that should be mounted as named volumes or host directories for the persistence of the server install and all related configuration files. More information on Docker volumes here: [Docker: Use Volumes](https://docs.docker.com/storage/volumes/)
 
-| Path | Description |
-| - | - |
+| Path              | Description                                                                                                                                     |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | /home/steam/Steam | Directory of steam cache and other steamcmd-related files. Should be mounted so that mod installs are persisted between container runs/restarts |
-| /ark | Directory that will contain the server files, config files, logs and backups. More information below |
+| /ark              | Directory that will contain the server files, config files, logs and backups. More information below                                            |
 
 ### Subdirectories of /ark
 
 Inside the `/ark` volume there are several directories containing server related files:
 
-| Path | Description |
-| - | - |
-| /ark/backup | Location of the zipped backups genereated from the `arkmaanger backup` command. Compressed using bz2. |
-| /ark/config | Location of server config files. More information: |
-| /ark/log | Location of the arkmanager and arkserver log files |
-| /ark/server | Location of the server installation performed by `steamcmd`. This will contain the ShooterGame directory and the actual server binaries. |
-| /ark/staging | Default directory for staging game and mod updates. Can be changed using in `arkmanager.cfg` |
+| Path         | Description                                                                                                                              |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| /ark/backup  | Location of the zipped backups genereated from the `arkmaanger backup` command. Compressed using bz2.                                    |
+| /ark/config  | Location of server config files. More information:                                                                                       |
+| /ark/log     | Location of the arkmanager and arkserver log files                                                                                       |
+| /ark/server  | Location of the server installation performed by `steamcmd`. This will contain the ShooterGame directory and the actual server binaries. |
+| /ark/staging | Default directory for staging game and mod updates. Can be changed using in `arkmanager.cfg`                                             |
