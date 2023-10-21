@@ -44,7 +44,7 @@ For more information on `arkmanager`, see the repo here: https://github.com/FezV
 
 Pull the latest (or any other desired version):
 ```bash
-docker pull thmhoag/arkserver:latest
+docker pull gornoka/arkserver:latest
 ```
 
 ### Running with bare Docker
