@@ -2,6 +2,12 @@ FROM cm2network/steamcmd
 # this finishes some steamcmd first time setup things, so that we don't have to run them everytime we start the container
 # ,originally done by old init parent container
 RUN /home/steam/steamcmd/steamcmd.sh +quit
+LABEL maintainer="https://github.com/Gornoka"
+LABEL org.opencontainers.image.source="https://github.com/Gornoka/arkserver"
+LABEL org.opencontainers.image.documentation="https://github.com/Gornoka/arkserver"
+LABEL org.opencontainers.image.url="https://github.com/Gornoka/arkserver"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.description="Steam CMD based ark server with arkmanager and ark-server-tools"
 
 USER root
 ARG DEBIAN_FRONTEND=noninteractive

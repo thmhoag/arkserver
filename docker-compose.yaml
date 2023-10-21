@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gornoka/arkserver:debug
+    image: gornoka/arkserver:latest
     volumes:
       - "steam:/home/steam/Steam"
       - "./ark_server_data_on_host:/ark" # ensure that the docker user has write rwx (7) permissions in this folder
