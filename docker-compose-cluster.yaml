@@ -95,7 +95,7 @@ services:
       am_ark_QueryPort: 27027 #Steam query port (allows the server to show up on the steam list) DO NOT CHANGE HERE USE ports below
       am_ark_Port: 7795 # Game server port (allows clients to connect to the server) DO NOT CHANGE HERE USE ports below
       am_ark_RCONPort: 32340 #RCON port DO NOT CHANGE HERE USE ports below
-      am_ark_SessionName: chilled_ark_2 #Server name as it will show on the steam server list
+      am_ark_SessionName: chilled_ark_3 #Server name as it will show on the steam server list
       am_serverMap: Gen2 #	Game map to load
       # DEBUG: "true"
     ports: # change ports here in case you wish to use different ports and or multiple servers in parrallel
