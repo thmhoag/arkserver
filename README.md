@@ -9,6 +9,8 @@
 Docker image for a dedicated ARK Server with arkmanager.
 ```
 
+NOTE: **This repository is no longer maintained and is considered deprecated. This is not functional with ARK: Survival Ascended.**
+
 ## Overview
 
 This is an image for running an ARK: Survival Evolved server in a Docker container. It is heavily based off of [TuRz4m](https://github.com/TuRz4m)'s work located here: [TuRz4m/Ark-docker](https://github.com/TuRz4m/Ark-docker). It uses [FezVrasta](https://github.com/FezVrasta)'s [arkmanager](https://github.com/FezVrasta/ark-server-tools) (ark-server-tools) to managed a single-instance ARK: Survival Evolved server inside a docker container.
